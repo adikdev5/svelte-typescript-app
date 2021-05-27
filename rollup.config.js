@@ -7,6 +7,7 @@ import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 import json from '@rollup/plugin-json';
+import replace from '@rollup/plugin-replace';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -42,6 +43,10 @@ export default {
     format: 'iife',
     name: 'app',
     file: 'public/build/bundle.js',
+
+    globals: {
+      crypto: 'crypto',
+    },
   },
   plugins: [
     svelte({
@@ -82,6 +87,10 @@ export default {
     // If we're building for production (npm run build
     // instead of npm run dev), minify
     production && terser(),
+    replace({
+      'Object.defineProperty(exports, "__esModule", { value: true });': '',
+      delimiters: ['\n', '\n'],
+    }),
   ],
   watch: {
     clearScreen: false,
